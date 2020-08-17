@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import json
-import .localsettings
+from . import localsettings
 
 try:
     with open('/etc/config.json') as config_file:
