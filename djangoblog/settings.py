@@ -12,14 +12,14 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import json
-from . import localsettings
 
 try:
-    with open('/etc/config.json') as config_file:
-        config = json.load(config_file)
-        state = 'SERVER'
+    server = os.environ.get('SERVER')
 except:
-    state = 'LOCAL'
+    try:
+        with open('/etc/config.json') as config_file:
+            config = json.load(config_file)
+            server = config['SERVER']
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,11 +27,41 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+    
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY') if state == 'LOCAL' else config['SECRET_KEY']
+if server in ('Local', 'Heroku'):
+    SECRET_KEY = os.environ.get('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if state == 'LOCAL' else False
+    # SECURITY WARNING: don't run with debug turned on in production!
+    DEBUG = os.environ.get('DEBUG_VALUE')
+
+    EMAIL_HOST = os.environ.get('EMAIL_HOST') 
+    EMAIL_HOST_USER = os.environ.get('EMAIL_USER') 
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL = None
+    AWS_S3_REGION_NAME = 'us-east-2'
+
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+elif server in ('Linode'):
+    SECRET_KEY = config['SECRET_KEY']
+
+    # SECURITY WARNING: don't run with debug turned on in production!
+    DEBUG = config['SECRET_KEY']
+
+    EMAIL_HOST = config['EMAIL_HOST']
+    EMAIL_HOST_USER = config['EMAIL_USER']
+    EMAIL_HOST_PASSWORD = config['EMAIL_PASS']
+
+
 
 ALLOWED_HOSTS = ['45.79.0.18', 'www.ngwakefield.com', 'https://django-blog-nw.herokuapp.com/']
 
@@ -129,7 +159,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-if localsettings.environment == 'heroku':
+if server == 'Heroku':
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 else:
@@ -137,29 +167,9 @@ else:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATIC_URL = '/static/'
-
-
 MEDIA_URL = '/media/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'blog-home'
 LOGIN_URL = 'login'
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST') if state == 'LOCAL' else config['EMAIL_HOST']
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_USER') if state == 'LOCAL' else config['EMAIL_USER']
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS') if state == 'LOCAL' else config['EMAIL_PASS']
-
-
-if state == 'LOCAL':
-    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-    AWS_S3_FILE_OVERWRITE = False
-    AWS_DEFAULT_ACL = None
-    AWS_S3_REGION_NAME = 'us-east-2'
-
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
