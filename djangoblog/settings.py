@@ -39,7 +39,7 @@ if server in ('Local', 'Heroku'):
     SECRET_KEY = os.environ.get('SECRET_KEY')
 
     # SECURITY WARNING: don't run with debug turned on in production!
-    DEBUG = os.environ.get('DEBUG_VALUE')
+    DEBUG = os.environ.get('DEBUG_VALUE')=='True'
 
     EMAIL_HOST = os.environ.get('EMAIL_HOST') 
     EMAIL_HOST_USER = os.environ.get('EMAIL_USER') 
@@ -59,7 +59,7 @@ elif server in ('Linode',):
     SECRET_KEY = config['SECRET_KEY']
 
     # SECURITY WARNING: don't run with debug turned on in production!
-    DEBUG = config['DEBUG_VALUE']
+    DEBUG = config['DEBUG_VALUE']=='True'
 
     EMAIL_HOST = config['EMAIL_HOST']
     EMAIL_HOST_USER = config['EMAIL_USER']
