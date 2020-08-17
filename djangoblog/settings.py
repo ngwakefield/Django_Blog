@@ -33,7 +33,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY') if state == 'LOCAL' else config['SECRE
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if state == 'LOCAL' else False
 
-ALLOWED_HOSTS = ['45.79.0.18', 'www.ngwakefield.com']
+ALLOWED_HOSTS = ['45.79.0.18', 'www.ngwakefield.com', 'https://django-blog-nw.herokuapp.com/']
 
 
 # Application definition
