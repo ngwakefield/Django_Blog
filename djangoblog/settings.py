@@ -65,7 +65,7 @@ elif server in ('Linode',):
 
 
 
-ALLOWED_HOSTS = ['45.79.0.18', 'www.ngwakefield.com', 'https://django-blog-nw.herokuapp.com/', 'localhost']
+ALLOWED_HOSTS = ['45.79.0.18', 'www.ngwakefield.com',  'django-blog-nw.herokuapp.com', 'localhost']
 
 
 # Application definition
