@@ -20,6 +20,8 @@ except:
         with open('/etc/config.json') as config_file:
             config = json.load(config_file)
             server = config['SERVER']
+    except:
+        raise Exception("No environment variables could be found")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -51,11 +53,11 @@ if server in ('Local', 'Heroku'):
 
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-elif server in ('Linode'):
+elif server in ('Linode',):
     SECRET_KEY = config['SECRET_KEY']
 
     # SECURITY WARNING: don't run with debug turned on in production!
-    DEBUG = config['SECRET_KEY']
+    DEBUG = config['DEBUG_VALUE']
 
     EMAIL_HOST = config['EMAIL_HOST']
     EMAIL_HOST_USER = config['EMAIL_USER']
@@ -63,7 +65,7 @@ elif server in ('Linode'):
 
 
 
-ALLOWED_HOSTS = ['45.79.0.18', 'www.ngwakefield.com', 'https://django-blog-nw.herokuapp.com/']
+ALLOWED_HOSTS = ['45.79.0.18', 'www.ngwakefield.com', 'https://django-blog-nw.herokuapp.com/', 'localhost']
 
 
 # Application definition
